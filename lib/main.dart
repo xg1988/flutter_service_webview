@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_service02/dto/ResponseData.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -43,11 +44,15 @@ class _SplashScreenState extends State<SplashScreen> {
       print('request_url : ' + request_url);
 
       final response = await http.get(Uri.parse(DEV_API_ROOT_PATH + DEV_API_VERSION_CHECK));
-      print('response : ' + response.body);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        String latestVersion = data['codeValue'];
+
+        ResponseData responseData = ResponseData.fromJson(json.decode(response.body));
+        String latestVersion = '';
+        if (responseData.body.isNotEmpty) {
+          latestVersion =  responseData.body[0].codeValue; // 첫 번째 body 요소의 codeValue
+        }
         print('latestVersion : ' + latestVersion);
         print('currentVersion : ' + currentVersion);
 
@@ -108,19 +113,45 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateToHome() {
-    Navigator.pushReplacement(
+    // 1. 그냥 화면 이동 일 경우
+    /*Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
+    );*/
+
+    // 3초 딜레이 주었을 때
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    });
   }
 
+  // splash 화면 custom 설정
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(), // 로딩 중일 때 표시
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/splash.png'), // 배경 이미지 경로
+              fit: BoxFit.cover, // 이미지가 컨테이너에 맞게 늘어나거나 잘리도록 설정
+            ),
+          ),
+          child: Center(
+            child: Text(
+              'Hello, Flutter!',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
       ),
     );
+
   }
 }
 

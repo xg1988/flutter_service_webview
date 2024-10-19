@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_service02/views/webview_full_x.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -31,6 +32,10 @@ class _WebViewBottomNavState extends State<HomeScreen> {
           onPressed: () {
             // 메뉴 버튼 클릭 시 동작 정의
             print('Menu button pressed');
+
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => WebViewScreen(url: 'http://ec2-3-35-217-73.ap-northeast-2.compute.amazonaws.com/wholemenu', title: '전체메뉴')),
+            );
           },
         ),
         actions: [
@@ -39,6 +44,9 @@ class _WebViewBottomNavState extends State<HomeScreen> {
             onPressed: () {
               // 알림 버튼 클릭 시 동작 정의
               print('Notifications button pressed');
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => WebViewScreen(url: 'https://nate.com', title: '공지사항')),
+              );
             },
           ),
         ],
